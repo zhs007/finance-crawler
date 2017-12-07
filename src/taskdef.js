@@ -1,0 +1,7 @@
+"use strict";
+
+const TASK_NAMEID_FINANCEMAIN   = 'finance_main';
+const TASK_NAMEID_SSESTOCKLIST  = 'sse_stocklist';
+
+exports.TASK_NAMEID_FINANCEMAIN     = TASK_NAMEID_FINANCEMAIN;
+exports.TASK_NAMEID_SSESTOCKLIST    = TASK_NAMEID_SSESTOCKLIST;
