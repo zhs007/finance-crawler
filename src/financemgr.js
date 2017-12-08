@@ -1,5 +1,6 @@
 "use strict";
 
+const util = require('util');
 const { CrawlerMgr } = require('crawlercore');
 
 const SQL_BATCH_NUMS = 2048;

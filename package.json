@@ -2,7 +2,7 @@
   "name": "finance-crawler",
   "version": "0.0.1",
   "dependencies": {
-    "crawlercore": "^1.2.25",
-    "jarvis-task": "^1.0.1"
+    "crawlercore": "^1.2.26",
+    "jarvis-task": "^1.0.6"
   }
 }
