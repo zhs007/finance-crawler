@@ -18,29 +18,19 @@ class TaskSSEStockList extends Task {
     onStart() {
         super.onStart();
 
-        for (let dbcfgname in this.cfg.mysqlcfg) {
-            CrawlerMgr.singleton.addMysqlCfg(dbcfgname, this.cfg.mysqlcfg[dbcfgname]);
-        }
+        FinanceMgr.singleton.init(this.cfg.maindb);
 
-        for (let crawlerkey in this.cfg.crawlercfg) {
-            CrawlerMgr.singleton[crawlerkey] = this.cfg.crawlercfg[crawlerkey];
-        }
+        FinanceMgr.singleton.loadSSEStockBase().then(() => {
+            startStockListCrawler(async (crawler) => {
+                if (crawler.options.typename == stocklistjsOptions.typename) {
+                    await FinanceMgr.singleton.saveSSEStockBase();
 
-        CrawlerMgr.singleton.init().then(() => {
-            FinanceMgr.singleton.init(this.cfg.maindb);
-
-            FinanceMgr.singleton.loadSSEStockBase().then(() => {
-                startStockListCrawler(async (crawler) => {
-                    if (crawler.options.typename == stocklistjsOptions.typename) {
-                        await FinanceMgr.singleton.saveSSEStockBase();
-
-                        this.onEnd();
-                    }
-                });
-
-                CrawlerMgr.singleton.start(true, true, async () => {
-                }, true);
+                    this.onEnd();
+                }
             });
+
+            CrawlerMgr.singleton.start(true, true, async () => {
+            }, true);
         });
     }
 };
