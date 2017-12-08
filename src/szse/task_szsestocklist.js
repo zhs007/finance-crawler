@@ -3,14 +3,13 @@
 const { Task } = require('jarvis-task');
 const { CrawlerMgr } = require('crawlercore');
 const { TaskFactory_FC } = require('../taskfactory');
-const { TASK_NAMEID_SSESTOCKLIST } = require('../taskdef');
+const { TASK_NAMEID_SZSESTOCKLIST } = require('../taskdef');
 const { FinanceMgr } = require('../financemgr');
 const { startStockListCrawler } = require('./stocklist');
-const { stocklistjsOptions } = require('./stocklistjs');
 
-class TaskSSEStockList extends Task {
+class TaskSZSEStockList extends Task {
     constructor(cfg) {
-        super(TASK_NAMEID_SSESTOCKLIST);
+        super(TASK_NAMEID_SZSESTOCKLIST);
 
         this.cfg = cfg;
     }
@@ -20,14 +19,12 @@ class TaskSSEStockList extends Task {
 
         FinanceMgr.singleton.init(this.cfg.maindb);
 
-        FinanceMgr.singleton.loadSSEStockBase().then(() => {
+        FinanceMgr.singleton.loadSZSEStockBase().then(() => {
             startStockListCrawler(async (crawler) => {
-                if (crawler.options.typename == stocklistjsOptions.typename) {
-                }
             });
 
             CrawlerMgr.singleton.start(true, false, async () => {
-                await FinanceMgr.singleton.saveSSEStockBase();
+                await FinanceMgr.singleton.saveSZSEStockBase();
 
                 this.onEnd();
             }, true);
@@ -35,8 +32,8 @@ class TaskSSEStockList extends Task {
     }
 };
 
-TaskFactory_FC.singleton.addTask(TASK_NAMEID_SSESTOCKLIST, (cfg) => {
-    return new TaskSSEStockList(cfg);
+TaskFactory_FC.singleton.addTask(TASK_NAMEID_SZSESTOCKLIST, (cfg) => {
+    return new TaskSZSEStockList(cfg);
 });
 
-exports.TaskSSEStockList = TaskSSEStockList;
+exports.TaskSZSEStockList = TaskSZSEStockList;
