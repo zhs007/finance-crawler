@@ -2,7 +2,7 @@
 
 const fs = require('fs');
 const process = require('process');
-const { TaskChain } = require('jarvis-task');
+const { TaskChain, TaskDeamon } = require('jarvis-task');
 const { TaskFactory_FC } = require('../src/taskfactory');
 require('../src/alltask');
 
@@ -10,6 +10,7 @@ const cfg = JSON.parse(fs.readFileSync('./config.json').toString());
 
 if (cfg.hasOwnProperty('nameid') && cfg.hasOwnProperty('taskchain')) {
     let curtaskchain = new TaskChain(cfg.nameid);
+    let taskd = new TaskDeamon();
 
     let lst = cfg.taskchain;
     for (let ii = 0; ii < lst.length; ++ii) {
@@ -20,10 +21,13 @@ if (cfg.hasOwnProperty('nameid') && cfg.hasOwnProperty('taskchain')) {
     }
 
     curtaskchain.setFunc(undefined, () => {
-        process.exit();
+        // process.exit();
     }, undefined, undefined, undefined, undefined, undefined);
 
-    curtaskchain.start();
+    // curtaskchain.start();
+
+    taskd.addTaskChain_DayClock(curtaskchain, cfg.clock);
+    taskd.start(1000);
 }
 else {
     process.exit();
