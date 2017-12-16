@@ -1,15 +1,9 @@
 "use strict";
 
-const { TaskFactory } = require('jarvis-task');
+const { TaskFactory, regTaskFactory_InitCrawlerMgr } = require('jarvis-task');
 const { TASKFACTORY_NAMEID_FINANCEMAIN } = require('./taskdef');
-const { FinanceMgr } = require('./financemgr');
 
-class TaskFactory_FC extends TaskFactory {
-    constructor() {
-        super(TASKFACTORY_NAMEID_FINANCEMAIN);
-    }
-};
+let taskFactory = new TaskFactory(TASKFACTORY_NAMEID_FINANCEMAIN);
+regTaskFactory_InitCrawlerMgr(taskFactory);
 
-TaskFactory_FC.singleton = new TaskFactory_FC();
-
-exports.TaskFactory_FC = TaskFactory_FC;
+exports.taskFactory = taskFactory;

@@ -2,7 +2,7 @@
 
 const { Task } = require('jarvis-task');
 const { CrawlerMgr } = require('crawlercore');
-const { TaskFactory_FC } = require('../taskfactory');
+const { taskFactory } = require('../taskfactory');
 const { TASK_NAMEID_SZSESTOCKLIST } = require('../taskdef');
 const { FinanceMgr } = require('../financemgr');
 const { startStockListCrawler } = require('./stocklist');
@@ -32,7 +32,7 @@ class TaskSZSEStockList extends Task {
     }
 };
 
-TaskFactory_FC.singleton.addTask(TASK_NAMEID_SZSESTOCKLIST, (cfg) => {
+taskFactory.regTask(TASK_NAMEID_SZSESTOCKLIST, (cfg) => {
     return new TaskSZSEStockList(cfg);
 });
 
