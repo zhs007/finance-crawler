@@ -1,6 +1,7 @@
 "use strict";
 
-const { CrawlerMgr, CRAWLER, DATAANALYSIS } = require('crawlercore');
+const { crawlercore } = require('jarvis-task');
+const { CrawlerMgr, CRAWLER, DATAANALYSIS } = crawlercore;
 const { FinanceMgr } = require('../financemgr');
 
 const OPTIONS_TYPENAME = 'sse_stocklistjs';

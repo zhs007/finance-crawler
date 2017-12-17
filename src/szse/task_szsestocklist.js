@@ -1,7 +1,7 @@
 "use strict";
 
-const { Task } = require('jarvis-task');
-const { CrawlerMgr } = require('crawlercore');
+const { Task, crawlercore } = require('jarvis-task');
+let { CrawlerMgr } = crawlercore;
 const { taskFactory } = require('../taskfactory');
 const { TASK_NAMEID_SZSESTOCKLIST } = require('../taskdef');
 const { FinanceMgr } = require('../financemgr');

@@ -1,6 +1,7 @@
 "use strict";
 
-const { CrawlerMgr, CRAWLER, DATAANALYSIS } = require('crawlercore');
+const { crawlercore } = require('jarvis-task');
+const { CrawlerMgr, CRAWLER, DATAANALYSIS } = crawlercore;
 const cheerio = require('cheerio');
 const { startStockListJSCrawler } = require('./stocklistjs');
 

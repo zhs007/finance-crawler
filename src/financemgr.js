@@ -1,7 +1,8 @@
 "use strict";
 
 const util = require('util');
-const { CrawlerMgr } = require('crawlercore');
+const { crawlercore } = require('jarvis-task');
+const { CrawlerMgr } = crawlercore;
 
 const SQL_BATCH_NUMS = 2048;
 
