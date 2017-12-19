@@ -21,6 +21,8 @@ class FinanceMgr {
     }
 
     async loadSSEStockBase() {
+        this.mapSSEStock = {};
+
         let conn = CrawlerMgr.singleton.getMysqlConn(this.mysqlid);
 
         let str = util.format("select * from ssestock");
@@ -98,6 +100,8 @@ class FinanceMgr {
     }
 
     async loadSZSEStockBase() {
+        this.mapSZSEStock = {};
+
         let conn = CrawlerMgr.singleton.getMysqlConn(this.mysqlid);
 
         let str = util.format("select * from szsestock");
@@ -177,6 +181,8 @@ class FinanceMgr {
     }
 
     async loadJRJFund() {
+        this.mapJRJFund = {};
+
         let conn = CrawlerMgr.singleton.getMysqlConn(this.mysqlid);
 
         let str = util.format("select * from fundbase");
@@ -199,7 +205,8 @@ class FinanceMgr {
         this.mapJRJFund[code] = fund;
     }
 
-    updJRJFund(code, type0, type1, type2) {
+    updJRJFund(code, name, type0, type1, type2) {
+        this.mapJRJFund[code].name = name;
         this.mapJRJFund[code].type0 = type0;
         this.mapJRJFund[code].type1 = type1;
         this.mapJRJFund[code].type2 = type2;

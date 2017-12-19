@@ -29,7 +29,7 @@ async function func_analysis(crawler) {
         fsarr.splice(0, 0, '');
     }
 
-    FinanceMgr.singleton.updJRJFund(code, fsarr[0], fsarr[1], fsarr[2]);
+    FinanceMgr.singleton.updJRJFund(code, title, fsarr[0], fsarr[1], fsarr[2]);
 
     return crawler;
 }
