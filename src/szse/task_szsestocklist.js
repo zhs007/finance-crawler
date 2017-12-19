@@ -9,9 +9,7 @@ const { startStockListCrawler } = require('./stocklist');
 
 class TaskSZSEStockList extends Task {
     constructor(cfg) {
-        super(TASK_NAMEID_SZSESTOCKLIST);
-
-        this.cfg = cfg;
+        super(TASK_NAMEID_SZSESTOCKLIST, cfg);
     }
 
     onStart() {

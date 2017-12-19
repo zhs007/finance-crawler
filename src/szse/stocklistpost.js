@@ -97,7 +97,7 @@ async function startStockListPostCrawler(catalogid, tabkey, pageno, pagecount, r
 exports.stocklistpostOptions = stocklistpostOptions;
 exports.startStockListPostCrawler = startStockListPostCrawler;
 
-CrawlerMgr.singleton.regOptions(OPTIONS_TYPENAME, () => {
-    let options = Object.assign({}, stocklistpostOptions);
-    return options;
-});
+// CrawlerMgr.singleton.regOptions(OPTIONS_TYPENAME, () => {
+//     let options = Object.assign({}, stocklistpostOptions);
+//     return options;
+// });

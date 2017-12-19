@@ -10,9 +10,7 @@ const { stocklistjsOptions } = require('./stocklistjs');
 
 class TaskSSEStockList extends Task {
     constructor(cfg) {
-        super(TASK_NAMEID_SSESTOCKLIST);
-
-        this.cfg = cfg;
+        super(TASK_NAMEID_SSESTOCKLIST, cfg);
     }
 
     onStart() {

@@ -55,7 +55,7 @@ function startStockListCrawler(callback) {
 exports.stocklistOptions = stocklistOptions;
 exports.startStockListCrawler = startStockListCrawler;
 
-CrawlerMgr.singleton.regOptions(OPTIONS_TYPENAME, () => {
-    let options = Object.assign({}, stocklistOptions);
-    return options;
-});
+// CrawlerMgr.singleton.regOptions(OPTIONS_TYPENAME, () => {
+//     let options = Object.assign({}, stocklistOptions);
+//     return options;
+// });

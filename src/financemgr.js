@@ -11,6 +11,8 @@ class FinanceMgr {
         this.mapSSEStock = {};
         this.mapSZSEStock = {};
 
+        this.mapJRJFund = {};
+
         this.mysqlid = undefined;
     }
 
@@ -172,6 +174,91 @@ class FinanceMgr {
         };
 
         this.mapSZSEStock[code] = s;
+    }
+
+    async loadJRJFund() {
+        let conn = CrawlerMgr.singleton.getMysqlConn(this.mysqlid);
+
+        let str = util.format("select * from fundbase");
+        let [rows, fields] = await conn.query(str);
+        for (let i = 0; i < rows.length; ++i) {
+            this.addJRJFund(rows[i].code, rows[i].name, rows[i].type0, rows[i].type1, rows[i].type2, true);
+        }
+    }
+
+    addJRJFund(code, name, type0, type1, type2, indb) {
+        let fund = {
+            code: code,
+            name: name,
+            type0: type0,
+            type1: type1,
+            type2: type2,
+            indb: indb
+        };
+
+        this.mapJRJFund[code] = fund;
+    }
+
+    updJRJFund(code, type0, type1, type2) {
+        this.mapJRJFund[code].type0 = type0;
+        this.mapJRJFund[code].type1 = type1;
+        this.mapJRJFund[code].type2 = type2;
+    }
+
+    async saveJRJFund() {
+        let conn = CrawlerMgr.singleton.getMysqlConn(this.mysqlid);
+
+        let fullsql = '';
+        let sqlnums = 0;
+        for (let code in this.mapJRJFund) {
+            let curfund = this.mapJRJFund[code];
+            if (!curfund.indb) {
+                let str0 = '';
+                let str1 = '';
+
+                let i = 0;
+                for (let key in curfund) {
+                    if (key != 'indb') {
+                        if (i != 0) {
+                            str0 += ', ';
+                            str1 += ', ';
+                        }
+
+                        str0 += '`' + key + '`';
+                        str1 += "'" + curfund[key] + "'";
+
+                        ++i;
+                    }
+                }
+
+                let sql = util.format("insert into fundbase(%s) values(%s);", str0, str1);
+                fullsql += sql;
+                ++sqlnums;
+
+                if (sqlnums >= SQL_BATCH_NUMS) {
+                    try{
+                        await conn.query(fullsql);
+                    }
+                    catch(err) {
+                        console.log('mysql err: ' + err);
+                        console.log('mysql sql: ' + fullsql);
+                    }
+
+                    fullsql = '';
+                    sqlnums = 0;
+                }
+            }
+        }
+
+        if (sqlnums > 0) {
+            try{
+                await conn.query(fullsql);
+            }
+            catch(err) {
+                console.log('mysql err: ' + err);
+                console.log('mysql sql: ' + fullsql);
+            }
+        }
     }
 };
 
