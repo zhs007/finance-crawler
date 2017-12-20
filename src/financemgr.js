@@ -330,7 +330,7 @@ class FinanceMgr {
         }
 
         try{
-            await conn.query(sql);
+            await conn.query(fullsql);
         }
         catch(err) {
             console.log('mysql err: ' + err);
