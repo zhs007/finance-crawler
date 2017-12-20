@@ -6,7 +6,7 @@ const { startTaskChain } = require('jarvis-task');
 const { taskFactory } = require('../src/taskfactory');
 require('../src/alltask');
 
-const cfg = JSON.parse(fs.readFileSync('./config.json').toString());
+const cfg = JSON.parse(fs.readFileSync('./initlist.json').toString());
 
 startTaskChain(cfg, taskFactory, () => {
 

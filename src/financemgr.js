@@ -267,6 +267,45 @@ class FinanceMgr {
             }
         }
     }
+
+    async _fixSinaStockCodeDay(tname, code, today) {
+        let conn = CrawlerMgr.singleton.getMysqlConn(this.mysqlid);
+
+        let sql = util.format("select * from `%s` where date(timem) = '%s' and code = '%s';", tname, today, code);
+        try{
+            let [rows, fields] = await conn.query(sql);
+            if (rows.length != 241 && rows.length > 0) {
+                sql = util.format("delete from `%s` where date(timem) = '%s' and code = '%s';", tname, today, code);
+                await conn.query(sql);
+            }
+        }
+        catch(err) {
+            console.log('mysql err: ' + err);
+            console.log('mysql sql: ' + fullsql);
+        }
+    }
+
+    async _fixSinaStockDay(tname, today) {
+        let conn = CrawlerMgr.singleton.getMysqlConn(this.mysqlid);
+
+        let sql = util.format("select DISTINCT(code) from %s;", tname);
+        try{
+            let [rows, fields] = await conn.query(sql);
+            for (let ii = 0; ii < rows.length; ++ii) {
+                await this._fixSinaStockCodeDay(tname, rows[ii].code, today);
+            }
+        }
+        catch(err) {
+            console.log('mysql err: ' + err);
+            console.log('mysql sql: ' + sql);
+        }
+    }
+
+    async fixSinaStockToday(today) {
+        for (let ii = 0; ii < 10; ++ii) {
+            await this._fixSinaStockDay('sinastock_m_' + ii, today);
+        }
+    }
 };
 
 FinanceMgr.singleton = new FinanceMgr();

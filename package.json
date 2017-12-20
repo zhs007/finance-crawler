@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "dependencies": {
     "jarvis-task": "^1.1.22",
+    "moment": "^2.20.1",
     "yargs": "^10.0.3"
   }
 }
