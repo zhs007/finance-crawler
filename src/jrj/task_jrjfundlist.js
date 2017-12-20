@@ -6,6 +6,7 @@ const { taskFactory } = require('../taskfactory');
 const { TASK_NAMEID_JRJFUNDLIST } = require('../taskdef');
 const { FinanceMgr } = require('../financemgr');
 const { startTotalFundCrawler } = require('./totalfund');
+const { startNewFundArchCrawler } = require('./fundarch');
 // const { stocklistjsOptions } = require('./stocklistjs');
 
 class TaskJRJFundList extends Task {
@@ -20,6 +21,10 @@ class TaskJRJFundList extends Task {
 
         FinanceMgr.singleton.loadJRJFund().then(() => {
             startTotalFundCrawler(async (crawler) => {
+                let lstfund = FinanceMgr.singleton.getNewJRJFund();
+                if (lstfund.length > 0) {
+                    startNewFundArchCrawler(lstfund, async () => {});
+                }
             });
 
             CrawlerMgr.singleton.start(true, false, async () => {

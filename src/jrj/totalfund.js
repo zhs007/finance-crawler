@@ -18,7 +18,7 @@ async function func_analysis(crawler) {
             if (!FinanceMgr.singleton.mapJRJFund.hasOwnProperty(fundcode)) {
                 FinanceMgr.singleton.addJRJFund(fundcode, element.attribs.title, '', '', '', false);
 
-                startFundBaseCrawler(element.attribs.href, () => {});
+                startFundBaseCrawler(fundcode, element.attribs.href, () => {});
             }
         }
 

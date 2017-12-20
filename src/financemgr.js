@@ -185,7 +185,7 @@ class FinanceMgr {
 
         let conn = CrawlerMgr.singleton.getMysqlConn(this.mysqlid);
 
-        let str = util.format("select * from fundbase");
+        let str = util.format("select * from jrjfundbase");
         let [rows, fields] = await conn.query(str);
         for (let i = 0; i < rows.length; ++i) {
             this.addJRJFund(rows[i].code, rows[i].name, rows[i].type0, rows[i].type1, rows[i].type2, true);
@@ -210,6 +210,18 @@ class FinanceMgr {
         this.mapJRJFund[code].type0 = type0;
         this.mapJRJFund[code].type1 = type1;
         this.mapJRJFund[code].type2 = type2;
+    }
+
+    getNewJRJFund() {
+        let lst = [];
+        for (let code in this.mapJRJFund) {
+            let curfund = this.mapJRJFund[code];
+            if (!curfund.indb) {
+                lst.push(curfund);
+            }
+        }
+
+        return lst;
     }
 
     async saveJRJFund() {
@@ -238,7 +250,7 @@ class FinanceMgr {
                     }
                 }
 
-                let sql = util.format("insert into fundbase(%s) values(%s);", str0, str1);
+                let sql = util.format("insert into jrjfundbase(%s) values(%s);", str0, str1);
                 fullsql += sql;
                 ++sqlnums;
 
@@ -281,7 +293,7 @@ class FinanceMgr {
         }
         catch(err) {
             console.log('mysql err: ' + err);
-            console.log('mysql sql: ' + fullsql);
+            console.log('mysql sql: ' + sql);
         }
     }
 
@@ -304,6 +316,83 @@ class FinanceMgr {
     async fixSinaStockToday(today) {
         for (let ii = 0; ii < 10; ++ii) {
             await this._fixSinaStockDay('sinastock_m_' + ii, today);
+        }
+    }
+
+    async _delJRJFundNet(tname, lst) {
+        let conn = CrawlerMgr.singleton.getMysqlConn(this.mysqlid);
+
+        let fullsql = '';
+
+        for (let ii = 0; ii < lst.length; ++ii) {
+            let sql = util.format("delete from `%s` where date(enddate) = date('%s') and fundcode = '%s';", tname, lst[ii].enddate, lst[ii].fundcode);
+            fullsql += sql;
+        }
+
+        try{
+            await conn.query(sql);
+        }
+        catch(err) {
+            console.log('mysql err: ' + err);
+            console.log('mysql sql: ' + fullsql);
+        }
+    }
+
+    async saveJRJFundNet(fundcode, lst) {
+        let tname = 'jrjfundnet_' + fundcode.charAt(5);
+
+        await this._delJRJFundNet(tname, lst);
+
+        let conn = CrawlerMgr.singleton.getMysqlConn(this.mysqlid);
+
+        let fullsql = '';
+        let sqlnums = 0;
+        for (let ii = 0; ii < lst.length; ++ii) {
+            let curfund = lst[ii];
+            if (!curfund.indb) {
+                let str0 = '';
+                let str1 = '';
+
+                let i = 0;
+                for (let key in curfund) {
+                    if (i != 0) {
+                        str0 += ', ';
+                        str1 += ', ';
+                    }
+
+                    str0 += '`' + key + '`';
+                    str1 += "'" + curfund[key] + "'";
+
+                    ++i;
+                }
+
+                let sql = util.format("insert into %s(%s) values(%s);", tname, str0, str1);
+                fullsql += sql;
+                ++sqlnums;
+
+                if (sqlnums >= SQL_BATCH_NUMS) {
+                    try{
+                        await conn.query(fullsql);
+                    }
+                    catch(err) {
+                        console.log('mysql err: ' + err);
+                        console.log('mysql sql: ' + fullsql);
+                    }
+
+                    fullsql = '';
+                    sqlnums = 0;
+                }
+            }
+        }
+
+        if (sqlnums > 0) {
+            try{
+                await conn.query(fullsql);
+            }
+            catch(err) {
+                console.log('mysql err: ' + err);
+                console.log('mysql sql: ' + fullsql);
+            }
         }
     }
 };
