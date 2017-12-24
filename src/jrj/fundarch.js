@@ -125,9 +125,37 @@ function startNewFundArchCrawler(lst, callback) {
     }
 }
 
+function startFundArchDayOffCrawler(fundcode, dayoff, callback) {
+    let curm = moment();
+    let lastm = moment().subtract(dayoff, 'days');
+    let curyear = parseInt(moment(curm).format('YYYY'));
+    let lastyear = parseInt(moment(lastm).format('YYYY'));
+
+    if (curyear != lastyear) {
+        for (let yi = lastyear; yi <= curyear; ++yi) {
+            if (yi == lastyear) {
+                let bd = parseInt(moment(lastm).format('YYYY-MM-DD'));
+                startFundArchCrawler(fundcode, yi, bd, yi + '-12-31', callback);
+            }
+            else if (yi == curyear) {
+                let ed = parseInt(moment(curm).format('YYYY-MM-DD'));
+                startFundArchCrawler(fundcode, yi, yi + '-01-01', ed, callback);
+            }
+            else {
+                startFundArchCrawler(fundcode, yi, yi + '-01-01', yi + '-12-31', callback);
+            }
+        }
+    }
+    else {
+        startFundArchCrawler(fundcode, curyear, parseInt(moment(lastm).format('YYYY-MM-DD')),
+            parseInt(moment(curm).format('YYYY-MM-DD')), callback);
+    }
+}
+
 exports.fundarchOptions = fundarchOptions;
 exports.startFundArchCrawler = startFundArchCrawler;
 exports.startNewFundArchCrawler = startNewFundArchCrawler;
+exports.startFundArchDayOffCrawler = startFundArchDayOffCrawler;
 
 // CrawlerMgr.singleton.regOptions(OPTIONS_TYPENAME, () => {
 //     let options = Object.assign({}, stocklistOptions);

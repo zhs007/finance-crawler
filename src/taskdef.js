@@ -7,6 +7,7 @@ const TASK_NAMEID_SSESTOCKLIST          = 'sse_stocklist';
 const TASK_NAMEID_SZSESTOCKLIST         = 'szse_stocklist';
 
 const TASK_NAMEID_JRJFUNDLIST           = 'jrj_fundlist';
+const TASK_NAMEID_JRJFUNDNET            = 'jrj_fundnet';
 
 const TASK_NAMEID_SINASTOCKTODAY        = 'sina_stocktoday';
 
@@ -17,5 +18,6 @@ exports.TASK_NAMEID_SSESTOCKLIST        = TASK_NAMEID_SSESTOCKLIST;
 exports.TASK_NAMEID_SZSESTOCKLIST       = TASK_NAMEID_SZSESTOCKLIST;
 
 exports.TASK_NAMEID_JRJFUNDLIST         = TASK_NAMEID_JRJFUNDLIST;
+exports.TASK_NAMEID_JRJFUNDNET          = TASK_NAMEID_JRJFUNDNET;
 
 exports.TASK_NAMEID_SINASTOCKTODAY      = TASK_NAMEID_SINASTOCKTODAY;
