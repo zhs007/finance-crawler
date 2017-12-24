@@ -147,8 +147,8 @@ function startFundArchDayOffCrawler(fundcode, dayoff, callback) {
         }
     }
     else {
-        startFundArchCrawler(fundcode, curyear, parseInt(moment(lastm).format('YYYY-MM-DD')),
-            parseInt(moment(curm).format('YYYY-MM-DD')), callback);
+        startFundArchCrawler(fundcode, curyear, moment(lastm).format('YYYY-MM-DD'),
+            moment(curm).format('YYYY-MM-DD'), callback);
     }
 }
 
