@@ -5,6 +5,6 @@ const { startTaskDeamon } = require('jarvis-task');
 const { taskFactory } = require('../src/taskfactory');
 require('../src/alltask');
 
-const cfg = JSON.parse(fs.readFileSync('./samples/taskdeamon.json').toString());
+const cfg = JSON.parse(fs.readFileSync('./taskdeamon.json').toString());
 
 startTaskDeamon(cfg, taskFactory);
