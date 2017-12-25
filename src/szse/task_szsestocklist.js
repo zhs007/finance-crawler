@@ -8,8 +8,8 @@ const { FinanceMgr } = require('../financemgr');
 const { startStockListCrawler } = require('./stocklist');
 
 class TaskSZSEStockList extends Task {
-    constructor(cfg) {
-        super(TASK_NAMEID_SZSESTOCKLIST, cfg);
+    constructor(taskfactory, cfg) {
+        super(taskfactory, TASK_NAMEID_SZSESTOCKLIST, cfg);
     }
 
     onStart() {
@@ -30,8 +30,8 @@ class TaskSZSEStockList extends Task {
     }
 };
 
-taskFactory.regTask(TASK_NAMEID_SZSESTOCKLIST, (cfg) => {
-    return new TaskSZSEStockList(cfg);
+taskFactory.regTask(TASK_NAMEID_SZSESTOCKLIST, (taskfactory, cfg) => {
+    return new TaskSZSEStockList(taskfactory, cfg);
 });
 
 exports.TaskSZSEStockList = TaskSZSEStockList;

@@ -2,12 +2,12 @@
 
 const fs = require('fs');
 const process = require('process');
-const { startTaskChain } = require('jarvis-task');
+const { startTask } = require('jarvis-task');
 const { taskFactory } = require('../src/taskfactory');
 require('../src/alltask');
 
 const cfg = JSON.parse(fs.readFileSync('./jrjfundtoday.json').toString());
 
-startTaskChain(cfg, taskFactory, () => {
-
+startTask(cfg, taskFactory, () => {
+    process.exit(0);
 });

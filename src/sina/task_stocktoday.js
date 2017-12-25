@@ -10,8 +10,8 @@ const { FinanceMgr } = require('../financemgr');
 // const { stocklistjsOptions } = require('./stocklistjs');
 
 class TaskSinaStockToday extends Task {
-    constructor(cfg) {
-        super(TASK_NAMEID_SINASTOCKTODAY, cfg);
+    constructor(taskfactory, cfg) {
+        super(taskfactory, TASK_NAMEID_SINASTOCKTODAY, cfg);
     }
 
     onStart() {
@@ -26,8 +26,8 @@ class TaskSinaStockToday extends Task {
     }
 };
 
-taskFactory.regTask(TASK_NAMEID_SINASTOCKTODAY, (cfg) => {
-    return new TaskSinaStockToday(cfg);
+taskFactory.regTask(TASK_NAMEID_SINASTOCKTODAY, (taskfactory, cfg) => {
+    return new TaskSinaStockToday(taskfactory, cfg);
 });
 
 exports.TaskSinaStockToday = TaskSinaStockToday;

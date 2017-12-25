@@ -10,8 +10,8 @@ const { startNewFundArchCrawler } = require('./fundarch');
 // const { stocklistjsOptions } = require('./stocklistjs');
 
 class TaskJRJFundList extends Task {
-    constructor(cfg) {
-        super(TASK_NAMEID_JRJFUNDLIST, cfg);
+    constructor(taskfactory, cfg) {
+        super(taskfactory, TASK_NAMEID_JRJFUNDLIST, cfg);
     }
 
     onStart() {
@@ -36,8 +36,8 @@ class TaskJRJFundList extends Task {
     }
 };
 
-taskFactory.regTask(TASK_NAMEID_JRJFUNDLIST, (cfg) => {
-    return new TaskJRJFundList(cfg);
+taskFactory.regTask(TASK_NAMEID_JRJFUNDLIST, (taskfactory, cfg) => {
+    return new TaskJRJFundList(taskfactory, cfg);
 });
 
 exports.TaskJRJFundList = TaskJRJFundList;

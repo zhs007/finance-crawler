@@ -8,8 +8,8 @@ const { FinanceMgr } = require('../financemgr');
 const { startFundArchDayOffCrawler } = require('./fundarch');
 
 class TaskJRJFundNet extends Task {
-    constructor(cfg) {
-        super(TASK_NAMEID_JRJFUNDNET, cfg);
+    constructor(taskfactory, cfg) {
+        super(taskfactory, TASK_NAMEID_JRJFUNDNET, cfg);
     }
 
     onStart() {
@@ -32,8 +32,8 @@ class TaskJRJFundNet extends Task {
     }
 };
 
-taskFactory.regTask(TASK_NAMEID_JRJFUNDNET, (cfg) => {
-    return new TaskJRJFundNet(cfg);
+taskFactory.regTask(TASK_NAMEID_JRJFUNDNET, (taskfactory, cfg) => {
+    return new TaskJRJFundNet(taskfactory, cfg);
 });
 
 exports.TaskJRJFundNet = TaskJRJFundNet;

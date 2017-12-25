@@ -9,8 +9,8 @@ const { startStockListCrawler } = require('./stocklist');
 const { stocklistjsOptions } = require('./stocklistjs');
 
 class TaskSSEStockList extends Task {
-    constructor(cfg) {
-        super(TASK_NAMEID_SSESTOCKLIST, cfg);
+    constructor(taskfactory, cfg) {
+        super(taskfactory, TASK_NAMEID_SSESTOCKLIST, cfg);
     }
 
     onStart() {
@@ -33,8 +33,8 @@ class TaskSSEStockList extends Task {
     }
 };
 
-taskFactory.regTask(TASK_NAMEID_SSESTOCKLIST, (cfg) => {
-    return new TaskSSEStockList(cfg);
+taskFactory.regTask(TASK_NAMEID_SSESTOCKLIST, (taskfactory, cfg) => {
+    return new TaskSSEStockList(taskfactory, cfg);
 });
 
 exports.TaskSSEStockList = TaskSSEStockList;
