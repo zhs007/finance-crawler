@@ -6,7 +6,7 @@ const { CrawlerMgr } = crawlercore;
 const { taskFactory } = require('../taskfactory');
 const { TASK_NAMEID_SINASTOCKTODAY } = require('../taskdef');
 const { FinanceMgr } = require('../financemgr');
-// const { startTotalFundCrawler } = require('./totalfund');
+const { startStockToday2Crawler_List } = require('./stocktoday');
 // const { stocklistjsOptions } = require('./stocklistjs');
 
 class TaskSinaStockToday extends Task {
@@ -20,8 +20,17 @@ class TaskSinaStockToday extends Task {
         let today = moment().format('YYYY-MM-DD');
         FinanceMgr.singleton.init(this.cfg.maindb);
 
-        FinanceMgr.singleton.fixSinaStockToday(today).then(() => {
-            this.onEnd();
+        FinanceMgr.singleton.loadSinaStock().then(() => {
+            FinanceMgr.singleton.fixSinaStockToday(today).then(() => {
+                FinanceMgr.singleton.getSinaTodayStock(today).then((lst) => {
+                    let rlst = FinanceMgr.singleton.reselectSinaStock(lst);
+                    startStockToday2Crawler_List(rlst, this.cfg.headlesschromename, () => {});
+
+                    CrawlerMgr.singleton.start(true, false, () => {
+                        this.onEnd();
+                    }, true);
+                });
+            });
         });
     }
 };

@@ -301,7 +301,7 @@ class FinanceMgr {
     async _fixSinaStockDay(tname, today) {
         let conn = CrawlerMgr.singleton.getMysqlConn(this.mysqlid);
 
-        let sql = util.format("select DISTINCT(code) from %s;", tname);
+        let sql = util.format("select DISTINCT(code) from %s where date(timem) = '%s';", tname, today);
         try{
             let [rows, fields] = await conn.query(sql);
             for (let ii = 0; ii < rows.length; ++ii) {
@@ -425,14 +425,14 @@ class FinanceMgr {
 
         let fullsql = '';
         let sqlnums = 0;
-        for (let code in this.mapSINAStock) {
-            let curfund = this.mapSINAStock[code];
-            if (!curfund.indb) {
+        for (let symbol in this.mapSINAStock) {
+            let curstock = this.mapSINAStock[symbol];
+            if (!curstock.indb) {
                 let str0 = '';
                 let str1 = '';
 
                 let i = 0;
-                for (let key in curfund) {
+                for (let key in curstock) {
                     if (key != 'indb') {
                         if (i != 0) {
                             str0 += ', ';
@@ -440,7 +440,7 @@ class FinanceMgr {
                         }
 
                         str0 += '`' + key + '`';
-                        str1 += "'" + curfund[key] + "'";
+                        str1 += "'" + curstock[key] + "'";
 
                         ++i;
                     }
@@ -474,6 +474,91 @@ class FinanceMgr {
                 console.log('mysql sql: ' + fullsql);
             }
         }
+    }
+
+    async saveSainStockPriceM(code, lst, curday) {
+        let conn = CrawlerMgr.singleton.getMysqlConn(this.mysqlid);
+
+        let fullsql = '';
+        let sqlnums = 0;
+
+        for (let i = 0; i < lst.length; ++i) {
+            let cursp = lst[i];
+            let str0 = '';
+            let str1 = '';
+
+            let j = 0;
+            for (let key in cursp) {
+                if (cursp[key] != undefined) {
+                    if (j != 0) {
+                        str0 += ', ';
+                        str1 += ', ';
+                    }
+
+                    str0 += '`' + key + '`';
+                    str1 += "'" + cursp[key] + "'";
+
+                    ++j;
+                }
+            }
+
+            let tname = 'sinastock_m_' + code.charAt(5);
+            let sql = util.format("insert into %s(%s) values(%s);", tname, str0, str1);
+
+            fullsql += sql;
+            ++sqlnums;
+
+            if (sqlnums > SQL_BATCH_NUMS) {
+                try {
+                    await conn.query(fullsql);
+                }
+                catch(err) {
+                    console.log('mysql err: ' + err);
+                    console.log('mysql sql: ' + fullsql);
+                }
+
+                fullsql = '';
+                sqlnums = 0;
+            }
+        }
+
+        if (sqlnums > 0) {
+            try {
+                await conn.query(fullsql);
+            }
+            catch(err) {
+                console.log('mysql err: ' + err);
+                console.log('mysql sql: ' + fullsql);
+            }
+        }
+
+        return true;
+    }
+
+    async getSinaTodayStock(curday) {
+        let lst = [];
+        let conn = CrawlerMgr.singleton.getMysqlConn(this.mysqlid);
+
+        for (let i = 0; i < 10; ++i) {
+            let sql = util.format('select distinct(code) as code from sinastock_m_%d where date(timem) = \'%s\';', i, curday);
+            let [rows, fields] = await conn.query(sql);
+            for (let i = 0; i < rows.length; ++i) {
+                lst.push(rows[i].code);
+            }
+        }
+
+        return lst;
+    }
+
+    reselectSinaStock(lst) {
+        let rlst = [];
+        for (let symbol in this.mapSINAStock) {
+            if (lst.indexOf(this.mapSINAStock[symbol].code) < 0) {
+                rlst.push(this.mapSINAStock[symbol]);
+            }
+        }
+
+        return rlst;
     }
 };
 
