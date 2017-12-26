@@ -34,7 +34,7 @@ async function func_analysis(crawler) {
             lst.push(co);
         }
 
-        StockMgr.singleton.saveSainStockPriceM(crawler.options.code, lst, curday);
+        // StockMgr.singleton.saveSainStockPriceM(crawler.options.code, lst, curday);
 
         Debugger.resume();
 
