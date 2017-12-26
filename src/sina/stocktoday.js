@@ -14,7 +14,7 @@ async function func_analysis(crawler) {
     Debugger.paused(async (params) => {
 
         let obj = await getVal_CDPCallFrame('h', params.callFrames, Runtime);
-        console.log('headlesschrome2 ' + JSON.stringify(obj));
+        // console.log('headlesschrome2 ' + JSON.stringify(obj));
 
         let curday = obj.data.td1[0].today;
         let lst = [];
@@ -34,7 +34,7 @@ async function func_analysis(crawler) {
             lst.push(co);
         }
 
-        // StockMgr.singleton.saveSainStockPriceM(crawler.options.code, lst, curday);
+        FinanceMgr.singleton.saveSainStockPriceM(crawler.options.code, lst, curday);
 
         Debugger.resume();
 
