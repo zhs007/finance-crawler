@@ -12,6 +12,7 @@ class FinanceMgr {
         this.mapSZSEStock = {};
 
         this.mapJRJFund = {};
+        this.mapSINAStock = {};
 
         this.mysqlid = undefined;
     }
@@ -367,6 +368,85 @@ class FinanceMgr {
                 }
 
                 let sql = util.format("insert into %s(%s) values(%s);", tname, str0, str1);
+                fullsql += sql;
+                ++sqlnums;
+
+                if (sqlnums >= SQL_BATCH_NUMS) {
+                    try{
+                        await conn.query(fullsql);
+                    }
+                    catch(err) {
+                        console.log('mysql err: ' + err);
+                        console.log('mysql sql: ' + fullsql);
+                    }
+
+                    fullsql = '';
+                    sqlnums = 0;
+                }
+            }
+        }
+
+        if (sqlnums > 0) {
+            try{
+                await conn.query(fullsql);
+            }
+            catch(err) {
+                console.log('mysql err: ' + err);
+                console.log('mysql sql: ' + fullsql);
+            }
+        }
+    }
+
+    async loadSinaStock() {
+        this.mapSINAStock = {};
+
+        let conn = CrawlerMgr.singleton.getMysqlConn(this.mysqlid);
+
+        let str = util.format("select * from sinastocklist");
+        let [rows, fields] = await conn.query(str);
+        for (let i = 0; i < rows.length; ++i) {
+            this.addSinaStock(rows[i].symbol, rows[i].code, rows[i].name, true);
+        }
+    }
+
+    addSinaStock(symbol, code, name, indb) {
+        let stock = {
+            code: code,
+            name: name,
+            symbol: symbol,
+            indb: indb
+        };
+
+        this.mapSINAStock[symbol] = stock;
+    }
+
+    async saveSinaStock() {
+        let conn = CrawlerMgr.singleton.getMysqlConn(this.mysqlid);
+
+        let fullsql = '';
+        let sqlnums = 0;
+        for (let code in this.mapSINAStock) {
+            let curfund = this.mapSINAStock[code];
+            if (!curfund.indb) {
+                let str0 = '';
+                let str1 = '';
+
+                let i = 0;
+                for (let key in curfund) {
+                    if (key != 'indb') {
+                        if (i != 0) {
+                            str0 += ', ';
+                            str1 += ', ';
+                        }
+
+                        str0 += '`' + key + '`';
+                        str1 += "'" + curfund[key] + "'";
+
+                        ++i;
+                    }
+                }
+
+                let sql = util.format("insert into sinastocklist(%s) values(%s);", str0, str1);
                 fullsql += sql;
                 ++sqlnums;
 
