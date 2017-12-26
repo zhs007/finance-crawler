@@ -8,7 +8,23 @@
       },
       "tasknameid": "jarvis_shell",
       "tasktype": "dayclock",
-      "clock": "09:00:00"
+      "clock": "10:10:00"
+    },
+    {
+      "jarvis_shell": {
+        "filename": "./shell_sinainitlist.js"
+      },
+      "tasknameid": "jarvis_shell",
+      "tasktype": "dayclock",
+      "clock": "10:20:00"
+    },
+    {
+      "jarvis_shell": {
+        "filename": "./shell_sinastocktoday.js"
+      },
+      "tasknameid": "jarvis_shell",
+      "tasktype": "dayclock",
+      "clock": "15:30:00"
     },
     {
       "jarvis_shell": {
