@@ -1,6 +1,7 @@
 "use strict";
 
 const util = require('util');
+const moment = require('moment');
 const { crawlercore } = require('jarvis-task');
 const { CrawlerMgr, CRAWLER, DATAANALYSIS, getVal_CDPCallFrame, HeadlessChromeMgr } = crawlercore;
 const { FinanceMgr } = require('../financemgr');
@@ -16,25 +17,28 @@ async function func_analysis(crawler) {
         let obj = await getVal_CDPCallFrame('h', params.callFrames, Runtime);
         // console.log('headlesschrome2 ' + JSON.stringify(obj));
 
+        let today = moment().format('YYYY-MM-DD');
         let curday = obj.data.td1[0].today;
-        let lst = [];
-        for (let i = 0; i <= 240; ++i) {
-            let co = {
-                code: crawler.options.code,
-                price: obj.data.td1[i].price * 10000,
-                avg_price: obj.data.td1[i].avg_price * 10000,
-                volume: obj.data.td1[i].volume * 10000,
-                timem: curday + ' ' + obj.data.td1[i].time
-            };
+        if (today == curday) {
+            let lst = [];
+            for (let i = 0; i <= 240; ++i) {
+                let co = {
+                    code: crawler.options.code,
+                    price: obj.data.td1[i].price * 10000,
+                    avg_price: obj.data.td1[i].avg_price * 10000,
+                    volume: obj.data.td1[i].volume * 10000,
+                    timem: curday + ' ' + obj.data.td1[i].time
+                };
 
-            if (isNaN(co.avg_price)) {
-                co.avg_price = 0;
+                if (isNaN(co.avg_price)) {
+                    co.avg_price = 0;
+                }
+
+                lst.push(co);
             }
 
-            lst.push(co);
+            FinanceMgr.singleton.saveSainStockPriceM(crawler.options.code, lst, curday);
         }
-
-        FinanceMgr.singleton.saveSainStockPriceM(crawler.options.code, lst, curday);
 
         Debugger.resume();
 
