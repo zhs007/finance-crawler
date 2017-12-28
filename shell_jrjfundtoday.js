@@ -1,8 +1,8 @@
-noticemsg('exec jrjfundtoday...');
+log('info', 'exec jrjfundtoday...');
 
 if (shell.which('node')) {
-    noticemsg('node ./bin/jrjfundtoday.js');
+    log('info', 'node ./bin/jrjfundtoday.js');
     shell.exec("node ./bin/jrjfundtoday.js");
 }
 
-noticemsg('exec jrjfundtoday end.');
+log('info', 'exec jrjfundtoday end.');

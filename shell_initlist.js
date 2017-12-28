@@ -1,8 +1,8 @@
-noticemsg('exec initlist...');
+log('info', 'exec initlist...');
 
 if (shell.which('node')) {
-    noticemsg('node ./bin/initlist.js');
+    log('info', 'node ./bin/initlist.js');
     shell.exec("node ./bin/initlist.js");
 }
 
-noticemsg('exec initlist end.');
+log('info', 'exec initlist end.');

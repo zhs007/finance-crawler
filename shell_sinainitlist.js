@@ -1,8 +1,8 @@
-noticemsg('exec sinainitlist...');
+log('info', 'exec sinainitlist...');
 
 if (shell.which('node')) {
-    noticemsg('node ./bin/sinainitlist.js');
+    log('info', 'node ./bin/sinainitlist.js');
     shell.exec("node ./bin/sinainitlist.js");
 }
 
-noticemsg('exec sinainitlist end.');
+log('info', 'exec sinainitlist end.');
