@@ -1,8 +1,8 @@
-log('info', 'exec sinastocktoday...');
+logger('info', 'exec sinastocktoday...');
 
 if (shell.which('node')) {
-    log('info', 'node ./bin/sinastocktoday.js');
+    logger('info', 'node ./bin/sinastocktoday.js');
     shell.exec("node ./bin/sinastocktoday.js");
 }
 
-log('info', 'exec sinastocktoday end.');
+logger('info', 'exec sinastocktoday end.');

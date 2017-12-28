@@ -1,8 +1,8 @@
-log('info', 'exec initlist...');
+logger('info', 'exec initlist...');
 
 if (shell.which('node')) {
-    log('info', 'node ./bin/initlist.js');
+    logger('info', 'node ./bin/initlist.js');
     shell.exec("node ./bin/initlist.js");
 }
 
-log('info', 'exec initlist end.');
+logger('info', 'exec initlist end.');
