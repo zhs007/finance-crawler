@@ -67,7 +67,18 @@ async function func_analysis(crawler) {
                     curobj.unit_net_chng_pct_3_mon = 0;
                 }
 
-                lst.push(curobj);
+                if (curobj.accum_net != 0 ||
+                    curobj.unit_net != 0 ||
+                    curobj.unit_net_chng_1 != 0 ||
+                    curobj.unit_net_chng_pct != 0 ||
+                    curobj.unit_net_chng_pct_1_mon != 0 ||
+                    curobj.unit_net_chng_pct_1_week != 0 ||
+                    curobj.unit_net_chng_pct_1_year != 0 ||
+                    curobj.unit_net_chng_pct_3_mon != 0 ||
+                    curobj.unit_net_chng_pct_3_mon != 0) {
+
+                    lst.push(curobj);
+                }
             }
         }
 
@@ -134,11 +145,11 @@ function startFundArchDayOffCrawler(fundcode, dayoff, callback) {
     if (curyear != lastyear) {
         for (let yi = lastyear; yi <= curyear; ++yi) {
             if (yi == lastyear) {
-                let bd = parseInt(moment(lastm).format('YYYY-MM-DD'));
+                let bd = moment(lastm).format('YYYY-MM-DD');
                 startFundArchCrawler(fundcode, yi, bd, yi + '-12-31', callback);
             }
             else if (yi == curyear) {
-                let ed = parseInt(moment(curm).format('YYYY-MM-DD'));
+                let ed = moment(curm).format('YYYY-MM-DD');
                 startFundArchCrawler(fundcode, yi, yi + '-01-01', ed, callback);
             }
             else {
