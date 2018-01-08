@@ -17,7 +17,7 @@ async function func_analysis(crawler) {
         let obj = await getVal_CDPCallFrame('h', params.callFrames, Runtime);
         // console.log('headlesschrome2 ' + JSON.stringify(obj));
 
-        let today = moment().format('YYYY-MM-DD');
+        let today = moment().format('YYYY-M-D');
         let curday = obj.data.td1[0].today;
         if (today == curday) {
             let lst = [];

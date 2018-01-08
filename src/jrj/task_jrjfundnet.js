@@ -24,7 +24,7 @@ class TaskJRJFundNet extends Task {
             }
 
             CrawlerMgr.singleton.start(true, false, async () => {
-                await FinanceMgr.singleton.saveJRJFund();
+                // await FinanceMgr.singleton.saveJRJFund();
 
                 this.onEnd();
             }, true);
