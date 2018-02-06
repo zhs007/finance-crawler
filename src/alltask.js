@@ -5,4 +5,5 @@ require('./szse/task_szsestocklist');
 require('./jrj/task_jrjfundlist');
 require('./jrj/task_jrjfundnet');
 require('./sina/task_stocktoday');
+require('./sina/task_stockjymxtoday');
 require('./sina/task_stocklist');

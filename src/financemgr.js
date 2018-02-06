@@ -1,13 +1,17 @@
 "use strict";
 
 const util = require('util');
+const moment = require('moment');
 const { crawlercore } = require('jarvis-task');
 const { CrawlerMgr } = crawlercore;
+const { runQuery } = require('./mysql');
 
 const SQL_BATCH_NUMS = 2048;
 
 class FinanceMgr {
     constructor() {
+        this.mapDayOff = {};
+
         this.mapSSEStock = {};
         this.mapSZSEStock = {};
 
@@ -21,15 +25,41 @@ class FinanceMgr {
         this.mysqlid = mysqlid;
     }
 
+    async loadDayOff() {
+        this.mapDayOff = {};
+
+        let conn = MysqlMgr.singleton.getMysqlConn(this.mysqlid);
+
+        let str = util.format("select * from dayoff");
+        let [rows, fields] = await conn.query(str);
+        for (let i = 0; i < rows.length; ++i) {
+            let cd = moment(rows[i].dayoff).format('YYYY-MM-DD');
+
+            this.mapDayOff[cd] = true;  // 表示数据库里有
+        }
+    }
+
+    isDayOff(curday) {
+        let cd = moment(curday).format('d');
+        // 周末
+        if (cd == 0 || cd == 6) {
+            return true;
+        }
+
+        return this.mapDayOff.hasOwnProperty(curday);
+    }
+
     async loadSSEStockBase() {
         this.mapSSEStock = {};
 
         let conn = CrawlerMgr.singleton.getMysqlConn(this.mysqlid);
 
         let str = util.format("select * from ssestock");
-        let [rows, fields] = await conn.query(str);
-        for (let i = 0; i < rows.length; ++i) {
-            this.addSSEStock(rows[i].code, rows[i].cname, rows[i].ename, true);
+        let rows = await runQuery(conn, str);
+        if (rows != undefined) {
+            for (let i = 0; i < rows.length; ++i) {
+                this.addSSEStock(rows[i].code, rows[i].cname, rows[i].ename, true);
+            }
         }
     }
 
@@ -64,13 +94,14 @@ class FinanceMgr {
                 ++sqlnums;
 
                 if (sqlnums >= SQL_BATCH_NUMS) {
-                    try{
-                        await conn.query(fullsql);
-                    }
-                    catch(err) {
-                        console.log('mysql err: ' + err);
-                        console.log('mysql sql: ' + fullsql);
-                    }
+                    await runQuery(conn, fullsql);
+                    // try{
+                    //     await conn.query(fullsql);
+                    // }
+                    // catch(err) {
+                    //     console.log('mysql err: ' + err);
+                    //     console.log('mysql sql: ' + fullsql);
+                    // }
 
                     fullsql = '';
                     sqlnums = 0;
@@ -79,13 +110,14 @@ class FinanceMgr {
         }
 
         if (sqlnums > 0) {
-            try{
-                await conn.query(fullsql);
-            }
-            catch(err) {
-                console.log('mysql err: ' + err);
-                console.log('mysql sql: ' + fullsql);
-            }
+            await runQuery(conn, fullsql);
+            // try{
+            //     await conn.query(fullsql);
+            // }
+            // catch(err) {
+            //     console.log('mysql err: ' + err);
+            //     console.log('mysql sql: ' + fullsql);
+            // }
         }
     }
 
@@ -106,9 +138,12 @@ class FinanceMgr {
         let conn = CrawlerMgr.singleton.getMysqlConn(this.mysqlid);
 
         let str = util.format("select * from szsestock");
-        let [rows, fields] = await conn.query(str);
-        for (let i = 0; i < rows.length; ++i) {
-            this.addSZSEStock(rows[i].code, rows[i].name, rows[i].fullname, rows[i].category, rows[i].url, true);
+        // let [rows, fields] = await conn.query(str);
+        let rows = await runQuery(conn, str);
+        if (rows != undefined) {
+            for (let i = 0; i < rows.length; ++i) {
+                this.addSZSEStock(rows[i].code, rows[i].name, rows[i].fullname, rows[i].category, rows[i].url, true);
+            }
         }
     }
 
@@ -143,13 +178,14 @@ class FinanceMgr {
                 ++sqlnums;
 
                 if (sqlnums >= SQL_BATCH_NUMS) {
-                    try{
-                        await conn.query(fullsql);
-                    }
-                    catch(err) {
-                        console.log('mysql err: ' + err);
-                        console.log('mysql sql: ' + fullsql);
-                    }
+                    await runQuery(conn, fullsql);
+                    // try{
+                    //     await conn.query(fullsql);
+                    // }
+                    // catch(err) {
+                    //     console.log('mysql err: ' + err);
+                    //     console.log('mysql sql: ' + fullsql);
+                    // }
 
                     fullsql = '';
                     sqlnums = 0;
@@ -158,13 +194,14 @@ class FinanceMgr {
         }
 
         if (sqlnums > 0) {
-            try{
-                await conn.query(fullsql);
-            }
-            catch(err) {
-                console.log('mysql err: ' + err);
-                console.log('mysql sql: ' + fullsql);
-            }
+            await runQuery(conn, fullsql);
+            // try{
+            //     await conn.query(fullsql);
+            // }
+            // catch(err) {
+            //     console.log('mysql err: ' + err);
+            //     console.log('mysql sql: ' + fullsql);
+            // }
         }
     }
 
@@ -187,9 +224,12 @@ class FinanceMgr {
         let conn = CrawlerMgr.singleton.getMysqlConn(this.mysqlid);
 
         let str = util.format("select * from jrjfundbase");
-        let [rows, fields] = await conn.query(str);
-        for (let i = 0; i < rows.length; ++i) {
-            this.addJRJFund(rows[i].code, rows[i].name, rows[i].type0, rows[i].type1, rows[i].type2, true);
+        // let [rows, fields] = await conn.query(str);
+        let rows = await runQuery(conn, str);
+        if (rows != undefined) {
+            for (let i = 0; i < rows.length; ++i) {
+                this.addJRJFund(rows[i].code, rows[i].name, rows[i].type0, rows[i].type1, rows[i].type2, true);
+            }
         }
     }
 
@@ -256,13 +296,14 @@ class FinanceMgr {
                 ++sqlnums;
 
                 if (sqlnums >= SQL_BATCH_NUMS) {
-                    try{
-                        await conn.query(fullsql);
-                    }
-                    catch(err) {
-                        console.log('mysql err: ' + err);
-                        console.log('mysql sql: ' + fullsql);
-                    }
+                    await runQuery(conn, fullsql);
+                    // try{
+                    //     await conn.query(fullsql);
+                    // }
+                    // catch(err) {
+                    //     console.log('mysql err: ' + err);
+                    //     console.log('mysql sql: ' + fullsql);
+                    // }
 
                     fullsql = '';
                     sqlnums = 0;
@@ -271,13 +312,14 @@ class FinanceMgr {
         }
 
         if (sqlnums > 0) {
-            try{
-                await conn.query(fullsql);
-            }
-            catch(err) {
-                console.log('mysql err: ' + err);
-                console.log('mysql sql: ' + fullsql);
-            }
+            await runQuery(conn, fullsql);
+            // try{
+            //     await conn.query(fullsql);
+            // }
+            // catch(err) {
+            //     console.log('mysql err: ' + err);
+            //     console.log('mysql sql: ' + fullsql);
+            // }
         }
     }
 
@@ -286,11 +328,16 @@ class FinanceMgr {
 
         let sql = util.format("select * from `%s` where date(timem) = '%s' and code = '%s';", tname, today, code);
         try{
-            let [rows, fields] = await conn.query(sql);
-            if (rows.length != 241 && rows.length > 0) {
+            let rows = await runQuery(conn, sql);
+            if (rows != undefined && rows.length != 241 && rows.length > 0) {
                 sql = util.format("delete from `%s` where date(timem) = '%s' and code = '%s';", tname, today, code);
-                await conn.query(sql);
+                await runQuery(conn, sql);
             }
+            // let [rows, fields] = await conn.query(sql);
+            // if (rows.length != 241 && rows.length > 0) {
+            //     sql = util.format("delete from `%s` where date(timem) = '%s' and code = '%s';", tname, today, code);
+            //     await conn.query(sql);
+            // }
         }
         catch(err) {
             console.log('mysql err: ' + err);
@@ -303,10 +350,13 @@ class FinanceMgr {
 
         let sql = util.format("select DISTINCT(code) from %s where date(timem) = '%s';", tname, today);
         try{
-            let [rows, fields] = await conn.query(sql);
-            for (let ii = 0; ii < rows.length; ++ii) {
-                await this._fixSinaStockCodeDay(tname, rows[ii].code, today);
+            let rows = await runQuery(conn, sql);
+            if (rows != undefined) {
+                for (let ii = 0; ii < rows.length; ++ii) {
+                    await this._fixSinaStockCodeDay(tname, rows[ii].code, today);
+                }
             }
+            // let [rows, fields] = await conn.query(sql);
         }
         catch(err) {
             console.log('mysql err: ' + err);
@@ -330,13 +380,14 @@ class FinanceMgr {
             fullsql += sql;
         }
 
-        try{
-            await conn.query(fullsql);
-        }
-        catch(err) {
-            console.log('mysql err: ' + err);
-            console.log('mysql sql: ' + fullsql);
-        }
+        await runQuery(conn, fullsql);
+        // try{
+        //     await conn.query(fullsql);
+        // }
+        // catch(err) {
+        //     console.log('mysql err: ' + err);
+        //     console.log('mysql sql: ' + fullsql);
+        // }
     }
 
     async saveJRJFundNet(fundcode, lst) {
@@ -372,13 +423,14 @@ class FinanceMgr {
                 ++sqlnums;
 
                 if (sqlnums >= SQL_BATCH_NUMS) {
-                    try{
-                        await conn.query(fullsql);
-                    }
-                    catch(err) {
-                        console.log('mysql err: ' + err);
-                        console.log('mysql sql: ' + fullsql);
-                    }
+                    await runQuery(conn, fullsql);
+                    // try{
+                    //     await conn.query(fullsql);
+                    // }
+                    // catch(err) {
+                    //     console.log('mysql err: ' + err);
+                    //     console.log('mysql sql: ' + fullsql);
+                    // }
 
                     fullsql = '';
                     sqlnums = 0;
@@ -387,13 +439,14 @@ class FinanceMgr {
         }
 
         if (sqlnums > 0) {
-            try{
-                await conn.query(fullsql);
-            }
-            catch(err) {
-                console.log('mysql err: ' + err);
-                console.log('mysql sql: ' + fullsql);
-            }
+            await runQuery(conn, fullsql);
+            // try{
+            //     await conn.query(fullsql);
+            // }
+            // catch(err) {
+            //     console.log('mysql err: ' + err);
+            //     console.log('mysql sql: ' + fullsql);
+            // }
         }
     }
 
@@ -403,10 +456,16 @@ class FinanceMgr {
         let conn = CrawlerMgr.singleton.getMysqlConn(this.mysqlid);
 
         let str = util.format("select * from sinastocklist");
-        let [rows, fields] = await conn.query(str);
-        for (let i = 0; i < rows.length; ++i) {
-            this.addSinaStock(rows[i].symbol, rows[i].code, rows[i].name, true);
+        let rows = await runQuery(conn, str);
+        if (rows != undefined) {
+            for (let i = 0; i < rows.length; ++i) {
+                this.addSinaStock(rows[i].symbol, rows[i].code, rows[i].name, true);
+            }
         }
+        // let [rows, fields] = await conn.query(str);
+        // for (let i = 0; i < rows.length; ++i) {
+        //     this.addSinaStock(rows[i].symbol, rows[i].code, rows[i].name, true);
+        // }
     }
 
     addSinaStock(symbol, code, name, indb) {
@@ -451,13 +510,14 @@ class FinanceMgr {
                 ++sqlnums;
 
                 if (sqlnums >= SQL_BATCH_NUMS) {
-                    try{
-                        await conn.query(fullsql);
-                    }
-                    catch(err) {
-                        console.log('mysql err: ' + err);
-                        console.log('mysql sql: ' + fullsql);
-                    }
+                    await runQuery(conn, fullsql);
+                    // try{
+                    //     await conn.query(fullsql);
+                    // }
+                    // catch(err) {
+                    //     console.log('mysql err: ' + err);
+                    //     console.log('mysql sql: ' + fullsql);
+                    // }
 
                     fullsql = '';
                     sqlnums = 0;
@@ -466,13 +526,14 @@ class FinanceMgr {
         }
 
         if (sqlnums > 0) {
-            try{
-                await conn.query(fullsql);
-            }
-            catch(err) {
-                console.log('mysql err: ' + err);
-                console.log('mysql sql: ' + fullsql);
-            }
+            await runQuery(conn, fullsql);
+            // try{
+            //     await conn.query(fullsql);
+            // }
+            // catch(err) {
+            //     console.log('mysql err: ' + err);
+            //     console.log('mysql sql: ' + fullsql);
+            // }
         }
     }
 
@@ -509,13 +570,14 @@ class FinanceMgr {
             ++sqlnums;
 
             if (sqlnums > SQL_BATCH_NUMS) {
-                try {
-                    await conn.query(fullsql);
-                }
-                catch(err) {
-                    console.log('mysql err: ' + err);
-                    console.log('mysql sql: ' + fullsql);
-                }
+                await runQuery(conn, fullsql);
+                // try {
+                //     await conn.query(fullsql);
+                // }
+                // catch(err) {
+                //     console.log('mysql err: ' + err);
+                //     console.log('mysql sql: ' + fullsql);
+                // }
 
                 fullsql = '';
                 sqlnums = 0;
@@ -523,13 +585,14 @@ class FinanceMgr {
         }
 
         if (sqlnums > 0) {
-            try {
-                await conn.query(fullsql);
-            }
-            catch(err) {
-                console.log('mysql err: ' + err);
-                console.log('mysql sql: ' + fullsql);
-            }
+            await runQuery(conn, fullsql);
+            // try {
+            //     await conn.query(fullsql);
+            // }
+            // catch(err) {
+            //     console.log('mysql err: ' + err);
+            //     console.log('mysql sql: ' + fullsql);
+            // }
         }
 
         return true;
@@ -541,10 +604,17 @@ class FinanceMgr {
 
         for (let i = 0; i < 10; ++i) {
             let sql = util.format('select distinct(code) as code from sinastock_m_%d where date(timem) = \'%s\';', i, curday);
-            let [rows, fields] = await conn.query(sql);
-            for (let i = 0; i < rows.length; ++i) {
-                lst.push(rows[i].code);
+            let rows = await runQuery(conn, sql);
+            if (rows != undefined) {
+                for (let i = 0; i < rows.length; ++i) {
+                    lst.push(rows[i].code);
+                }
             }
+
+            // let [rows, fields] = await conn.query(sql);
+            // for (let i = 0; i < rows.length; ++i) {
+            //     lst.push(rows[i].code);
+            // }
         }
 
         return lst;
@@ -559,6 +629,152 @@ class FinanceMgr {
         }
 
         return rlst;
+    }
+
+    // ym is like 201801
+    // ti is like 0-9
+    async createSinaJYMXTable(ym, ti) {
+        let sql = util.format("CREATE TABLE `sinajymx_%d_%d` (\n" +
+            "  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,\n" +
+            "  `code` char(6) NOT NULL DEFAULT '',\n" +
+            "  `price` int(11) DEFAULT NULL,\n" +
+            "  `priceoff` int(11) DEFAULT NULL,\n" +
+            "  `volume` int(11) DEFAULT NULL,\n" +
+            "  `realmoney` bigint(20) DEFAULT NULL,\n" +
+            "  `panstate` int(11) DEFAULT NULL,\n" +
+            "  `realtime` timestamp NULL DEFAULT NULL,\n" +
+            "  PRIMARY KEY (`id`),\n" +
+            "  KEY `codetime` (`code`,`realtime`)\n" +
+            ") ENGINE=MyISAM DEFAULT CHARSET=utf8;", ym, ti);
+
+        let conn = CrawlerMgr.singleton.getMysqlConn(this.mysqlid);
+        await runQuery(conn, sql);
+    }
+
+    async countSinaJYMXList(ymd) {
+        let lst = [];
+
+        let conn = CrawlerMgr.singleton.getMysqlConn(this.mysqlid);
+
+        for (let ii = 0; ii < 10; ++ii) {
+            let tname = 'sinajymxday_' + ii;
+            let sql = util.format("select code, nums from `%s` where date(timed) = date('%s');", tname, ymd);
+            let rows = await runQuery(conn, sql);
+            if (rows != undefined) {
+                let tname1 = 'sinajymx_' + moment(ymd).format('YYYYMM') + '_' + ii;
+
+                for (let jj = 0; jj < rows.length; ++jj) {
+                    let sql1 = util.format("select count(id) as nums from `%s` where date(realtime) = date('%s') and code = '%s';", tname1, ymd, rows[jj].code);
+                    let rows1 = await runQuery(conn, sql1);
+                    if (rows1 != undefined) {
+                        if (rows1[0].nums == rows[jj].nums) {
+                            lst.push(rows[jj].code);
+                        }
+                    }
+
+                    // lst.push(rows[jj].code);
+                }
+            }
+        }
+
+        return lst;
+    }
+
+    async _delSinaJYMXDay(jymxday) {
+        let conn = CrawlerMgr.singleton.getMysqlConn(this.mysqlid);
+
+        let tname = 'sinajymxday_' + jymxday.code.charAt(5);
+        let sql = util.format("delete from `%s` where date(timed) = date('%s') and code = '%s';", tname, jymxday.timed, jymxday.code);
+        await runQuery(conn, sql);
+    }
+
+    async saveSinaJYMXDay(jymxday) {
+        await this._delSinaJYMXDay(jymxday);
+        await this._delSinaJYMX(jymxday);
+
+        let conn = CrawlerMgr.singleton.getMysqlConn(this.mysqlid);
+
+        let fullsql = '';
+        let sqlnums = 0;
+
+        let str0 = '';
+        let str1 = '';
+
+        let j = 0;
+        for (let key in jymxday) {
+            if (jymxday[key] != undefined) {
+                if (j != 0) {
+                    str0 += ', ';
+                    str1 += ', ';
+                }
+
+                str0 += '`' + key + '`';
+                str1 += "'" + jymxday[key] + "'";
+
+                ++j;
+            }
+        }
+
+        let tname = 'sinajymxday_' + jymxday.code.charAt(5);
+        let sql = util.format("insert into %s(%s) values(%s);", tname, str0, str1);
+        await runQuery(conn, sql);
+
+        return true;
+    }
+
+    async _delSinaJYMX(jymxday) {
+        let conn = CrawlerMgr.singleton.getMysqlConn(this.mysqlid);
+
+        let tname = 'sinajymx_' + moment(jymxday.timed).format('YYYYMM') + '_' + jymxday.code.charAt(5);
+        let sql = util.format("delete from `%s` where date(realtime) = date('%s') and code = '%s';", tname, jymxday.timed, jymxday.code);
+        await runQuery(conn, sql);
+    }
+
+    async saveSinaJYMX(ym, code, lst) {
+        let conn = CrawlerMgr.singleton.getMysqlConn(this.mysqlid);
+
+        let fullsql = '';
+        let sqlnums = 0;
+
+        for (let i = 0; i < lst.length; ++i) {
+            let cursp = lst[i];
+            let str0 = '';
+            let str1 = '';
+
+            let j = 0;
+            for (let key in cursp) {
+                if (cursp[key] != undefined) {
+                    if (j != 0) {
+                        str0 += ', ';
+                        str1 += ', ';
+                    }
+
+                    str0 += '`' + key + '`';
+                    str1 += "'" + cursp[key] + "'";
+
+                    ++j;
+                }
+            }
+
+            let tname = 'sinajymx_' + ym + '_' + code.charAt(5);
+            let sql = util.format("insert into %s(%s) values(%s);", tname, str0, str1);
+
+            fullsql += sql;
+            ++sqlnums;
+
+            if (sqlnums > SQL_BATCH_NUMS) {
+                await runQuery(conn, fullsql);
+
+                fullsql = '';
+                sqlnums = 0;
+            }
+        }
+
+        if (sqlnums > 0) {
+            await runQuery(conn, fullsql);
+        }
+
+        return true;
     }
 };
 
