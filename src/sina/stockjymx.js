@@ -1,6 +1,6 @@
 "use strict";
 
-const { crawlercore: {CrawlerMgr, CRAWLER, DATAANALYSIS, STORAGE, CRAWLERCACHE, getVal_CDPCallFrame, HeadlessChromeMgr} } = require('jarvis-task');
+const { crawlercore: {CrawlerMgr, CRAWLER, DATAANALYSIS, STORAGE, CRAWLERCACHE, getDocumentHtml_CDP, HeadlessChromeMgr} } = require('jarvis-task');
 let util = require('util');
 let fs = require('fs');
 let moment = require('moment');
@@ -11,7 +11,19 @@ const OPTIONS_TYPENAME = 'sina_jymx2';
 
 // 分析数据
 async function func_analysis(crawler) {
+    // const { Page, Runtime } = crawler.client;
+    // await Page.enable();
+    // await Page.addScriptToEvaluateOnNewDocument({source: 'function alert(str) { console.log(str); }'});
+    // await Page.navigate({url: crawler.options.uri});
+    // await Page.loadEventFired();
+    // const result = await Runtime.evaluate({
+    //     expression: 'document.documentElement.outerHTML'
+    // });
+    // let str1 = result.result.value;
 
+    // let str1 = await getDocumentHtml_CDP(crawler.options.uri, crawler.client);
+
+    // let str = iconv.decode(str1, 'gbk');
     let str = iconv.decode(crawler.data, 'gbk');
     if (str.indexOf('<script') < 0) {
         let jymxday = {
@@ -127,7 +139,7 @@ let sinajymx2Options = {
     func_analysis: func_analysis
 };
 
-async function startJYMX2Crawler_day(code, day) {
+async function startJYMX2Crawler_day(code, day, hcname) {
     let sd = moment(day);
     // let ed = moment(endday);
 
@@ -139,6 +151,7 @@ async function startJYMX2Crawler_day(code, day) {
         op.code = code.substr(code.length - 6, 6);
         op.curday = curday;
         op.curyearmonth = sd.format('YYYYMM');
+    op.headlesschromename = hcname;
         // op.xlsfilename = code + '_' + curday + '.xls';
         // op.uri = util.format('http://quotes.sina.cn/hs/company/quotes/view/%s/?from=wap', code);
         //op.headlesschromename = hcname;

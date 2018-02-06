@@ -17,8 +17,8 @@ class TaskSinaStockJYMXToday extends Task {
     onStart() {
         super.onStart();
 
-        // let today = moment().format('YYYY-MM-DD');
-        let today = '2018-02-05';
+        let today = moment().format('YYYY-MM-DD');
+        // let today = '2018-02-05';
         FinanceMgr.singleton.init(this.cfg.maindb);
 
         FinanceMgr.singleton.loadSinaStock().then(async () => {
@@ -32,7 +32,7 @@ class TaskSinaStockJYMXToday extends Task {
             //         startStockToday2Crawler_List(rlst, this.cfg.headlesschromename, () => {});
 
             for (let ii = 0; ii < rlst.length; ++ii) {
-                startJYMX2Crawler_day(rlst[ii].code, today);
+                startJYMX2Crawler_day(rlst[ii].symbol, today, this.cfg.headlesschromename);
                 // startJYMX2Crawler_day(key, '2018-02-05');
             }
 
