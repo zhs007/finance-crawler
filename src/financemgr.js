@@ -776,6 +776,76 @@ class FinanceMgr {
 
         return true;
     }
+
+    // instrument is like EUR_USD
+    // timemode is like M1
+    async createOandaInstrumentTable(instrument, timemode) {
+        let sql = util.format("CREATE TABLE `oanda_%s_%s` (\n" +
+            "  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,\n" +
+            "  `realtime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,\n" +
+            "  `ask_o` int(11) NOT NULL,\n" +
+            "  `ask_c` int(11) NOT NULL,\n" +
+            "  `ask_h` int(11) NOT NULL,\n" +
+            "  `ask_l` int(11) NOT NULL,\n" +
+            "  `bid_o` int(11) NOT NULL,\n" +
+            "  `bid_c` int(11) NOT NULL,\n" +
+            "  `bid_h` int(11) NOT NULL,\n" +
+            "  `bid_l` int(11) NOT NULL,\n" +
+            "  `volume` int(11) NOT NULL,\n" +
+            "  PRIMARY KEY (`id`),\n" +
+            "  UNIQUE KEY `realtime` (`realtime`)\n" +
+            ") ENGINE=MyISAM DEFAULT CHARSET=utf8;", instrument, timemode);
+
+        let conn = CrawlerMgr.singleton.getMysqlConn(this.mysqlid);
+        await runQuery(conn, sql);
+    }
+
+    async saveOandaInstrument(tname, lst) {
+        let conn = CrawlerMgr.singleton.getMysqlConn(this.mysqlid);
+
+        let fullsql = '';
+        let sqlnums = 0;
+
+        for (let i = 0; i < lst.length; ++i) {
+            let cursp = lst[i];
+            let str0 = '';
+            let str1 = '';
+
+            let j = 0;
+            for (let key in cursp) {
+                if (cursp[key] != undefined) {
+                    if (j != 0) {
+                        str0 += ', ';
+                        str1 += ', ';
+                    }
+
+                    str0 += '`' + key + '`';
+                    str1 += "'" + cursp[key] + "'";
+
+                    ++j;
+                }
+            }
+
+            // let tname = 'sinajymx_' + ym + '_' + code.charAt(5);
+            let sql = util.format("insert into %s(%s) values(%s);", tname, str0, str1);
+
+            fullsql += sql;
+            ++sqlnums;
+
+            if (sqlnums > SQL_BATCH_NUMS) {
+                await runQuery(conn, fullsql);
+
+                fullsql = '';
+                sqlnums = 0;
+            }
+        }
+
+        if (sqlnums > 0) {
+            await runQuery(conn, fullsql);
+        }
+
+        return true;
+    }
 };
 
 FinanceMgr.singleton = new FinanceMgr();
