@@ -7,3 +7,4 @@ require('./jrj/task_jrjfundnet');
 require('./sina/task_stocktoday');
 require('./sina/task_stockjymxtoday');
 require('./sina/task_stocklist');
+require('./oanda/task_oandahistory');

@@ -21,7 +21,7 @@ function countTradingDay(ymd) {
 
     return {
         begintime: ct.utc().format(),
-        endtime: ct.add(1, 'days').utc().format()
+        endtime: ct.add(1, 'day').utc().format()
     };
 
     let cwd = ct.weekday();
