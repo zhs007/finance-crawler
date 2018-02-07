@@ -28,6 +28,14 @@
     },
     {
       "jarvis_shell": {
+        "filename": "./shell_sinastockjymxtoday.js"
+      },
+      "tasknameid": "jarvis_shell",
+      "tasktype": "dayclock",
+      "clock": "18:30:00"
+    },
+    {
+      "jarvis_shell": {
         "filename": "./shell_jrjfundtoday.js"
       },
       "tasknameid": "jarvis_shell",

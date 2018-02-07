@@ -18,7 +18,7 @@ class TaskSinaStockJYMXToday extends Task {
         super.onStart();
 
         let today = moment().format('YYYY-MM-DD');
-        // let today = '2018-02-05';
+        // let today = '2018-02-06';
         FinanceMgr.singleton.init(this.cfg.maindb);
 
         FinanceMgr.singleton.loadSinaStock().then(async () => {
