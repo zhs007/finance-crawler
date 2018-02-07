@@ -128,6 +128,19 @@ let sinajymx2Options = {
     uri: 'http://market.finance.sina.com.cn/downxls.php?date=2017-10-25&symbol=sh600000',
     timeout: 30 * 1000,
 
+    headers: {
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+        'Accept-Encoding': 'gzip, deflate',
+        'Accept-Language': 'zh,zh-TW;q=0.9,en-US;q=0.8,en;q=0.7',
+        'Cache-Control': 'no-cache',
+        'Connection': 'keep-alive',
+        'Cookie': 'SINAGLOBAL=116.211.162.35_1422599755.715605; U_TRS1=00000053.79211357.54cb2659.41aa78bb; vjuids=36f12240e.14b398dd1f8.0.f87ab5bb; SGUID=1422599778645_13825480; UOR=,,; vjlast=1509288041.1510538363.11; SR_SEL=1_511; FINA_V_S_2=sh600960,sh600057; SUBP=0033WrSXqPxfM72-Ws9jqgMF55529P9D9WWL0RbDfAWHBh_WfguS9_GU; lxlrtst=1515058382_o; U_TRS2=00000051.226e586c.5a5b4c93.e06ba8f2; Apache=59.174.13.81_1515932820.602292; ULV=1516023975972:31:2:2:59.174.13.81_1515932820.602292:1515932819621; lxlrttp=1515814141; FINANCE2=188db5c668e55e32add7da9187ae8f9b; SUB=_2AkMtJb8ff8NxqwJRmP4Wym_nb413ywDEieKbeU7EJRMyHRl-yD83qhYDtRB6BqWR8I4s4bFJEZPoVcHoOsm2SftUGk6Y',
+        'Host': 'market.finance.sina.com.cn',
+        'Pragma': 'no-cache',
+        'Upgrade-Insecure-Requests': 1,
+        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36'
+    },
+
     force_encoding: 'binary',
 
     // 爬虫类型
