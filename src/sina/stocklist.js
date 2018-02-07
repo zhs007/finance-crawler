@@ -35,7 +35,7 @@ let stocklistOptions = {
 
     // 分析数据
     func_analysis: func_analysis,
-    func_onfinish: undefined
+    func_onfinish: undefined,
 };
 
 function startStockListCrawler(pageindex, callback) {

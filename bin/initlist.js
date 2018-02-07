@@ -9,6 +9,10 @@ const { taskFactory } = require('../src/taskfactory');
 require('../src/alltask');
 
 initDailyRotateFileLog(util.format('./log/initlist_%d.log', moment().format('x')), 'info');
+
+process.on('unhandledRejection', (reason, p) => {
+    log('error', 'Unhandled Rejection at: ' + p + ' reason: ' + reason);
+});
 // log('info', 'haha');
 
 const cfg = JSON.parse(fs.readFileSync('./initlist.json').toString());

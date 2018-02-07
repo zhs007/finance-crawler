@@ -11,7 +11,7 @@ require('../src/alltask');
 initDailyRotateFileLog(util.format('./log/sinastocktoday_%d.log', moment().format('x')), 'info');
 
 process.on('unhandledRejection', (reason, p) => {
-    log('error', 'Unhandled Rejection at:', p, 'reason:', reason);
+    log('error', 'Unhandled Rejection at: ' + p + ' reason: ' + reason);
 });
 
 const cfg = JSON.parse(fs.readFileSync('./sinastocktoday.json').toString());

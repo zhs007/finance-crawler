@@ -5,6 +5,7 @@ let util = require('util');
 let fs = require('fs');
 let moment = require('moment');
 const iconv = require('iconv-lite');
+const process = require('process');
 const { FinanceMgr } = require('../financemgr');
 
 const OPTIONS_TYPENAME = 'sina_jymx2';
@@ -136,7 +137,13 @@ let sinajymx2Options = {
     dataanalysis_type: DATAANALYSIS.NULL,
 
     // 分析数据
-    func_analysis: func_analysis
+    func_analysis: func_analysis,
+
+    func_onerror: (crawler, err) => {
+        if (err.statusCode == 456) {
+            process.exit(0);
+        }
+    }
 };
 
 async function startJYMX2Crawler_day(code, day, hcname) {
