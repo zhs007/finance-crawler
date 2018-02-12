@@ -800,7 +800,36 @@ class FinanceMgr {
         await runQuery(conn, sql);
     }
 
+    async _deleteOandaInstrument(tname, lst) {
+        let conn = CrawlerMgr.singleton.getMysqlConn(this.mysqlid);
+
+        let sql = util.format("delete from `%s` where unix_timestamp(realtime) >= unix_timestamp('%s') and " +
+            "unix_timestamp(realtime) <= unix_timestamp('%s');", tname, lst[0].realtime, lst[lst.length - 1].realtime);
+        // let fullsql = '';
+        //
+        // for (let ii = 0; ii < lst.length; ++ii) {
+        //     let sql = util.format("delete from `%s` where unix_timestamp(realtime) = unix_timestamp('%s');", tname, lst[ii].realtime);
+        //     fullsql += sql;
+        // }
+
+        await runQuery(conn, sql);
+    }
+
+    async getLastDayOandaInstrument(tname) {
+        let conn = CrawlerMgr.singleton.getMysqlConn(this.mysqlid);
+
+        let sql = util.format("select * from `%s` order by realtime desc limit 0, 1;", tname);
+        let ret = await runQuery(conn, sql);
+        if (ret && ret.length > 0) {
+            return ret[0].realtime;
+        }
+
+        return undefined;
+    }
+
     async saveOandaInstrument(tname, lst) {
+        await this._deleteOandaInstrument(tname, lst);
+
         let conn = CrawlerMgr.singleton.getMysqlConn(this.mysqlid);
 
         let fullsql = '';

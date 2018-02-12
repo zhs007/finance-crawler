@@ -12,10 +12,14 @@ initDailyRotateFileLog(util.format('./log/oandahistory_%d.log', moment().format(
 
 process.on('unhandledRejection', (reason, p) => {
     log('error', 'Unhandled Rejection at: ' + p + ' reason: ' + reason);
+
+    process.exit(0);
 });
 
 process.on('uncaughtException', (err) => {
-    log('error', 'Unhandled Exception at: ' +JSON.stringify(err));
+    log('error', 'Unhandled Exception: ' + JSON.stringify(err));
+
+    process.exit(0);
 });
 
 const cfg = JSON.parse(fs.readFileSync('./oandahistory.json').toString());

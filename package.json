@@ -5,6 +5,7 @@
     "@oanda/v20": "^3.0.18-16",
     "iconv-lite": "^0.4.19",
     "jarvis-task": "^1.3.56",
+    "libtrader": "^1.0.7",
     "moment": "^2.20.1",
     "moment-timezone": "^0.5.14",
     "yargs": "^10.0.3"

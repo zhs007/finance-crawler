@@ -27,20 +27,20 @@ function countTradingDay(ymd) {
     let cwd = ct.weekday();
     if (cwd == 6) {
         return {
-            begintime: ct.hour(17),
-            endtime: ct.add(1, 'day')
+            begintime: ct.hour(17).utc().format(),
+            endtime: ct.add(1, 'd').utc().format()
         };
     }
     else if (cwd == 4) {
         return {
-            begintime: ct,
-            endtime: ct.hour(17)
+            begintime: ct.utc().format(),
+            endtime: ct.hour(17).utc().format()
         };
     }
     else if (cwd != 5) {
         return {
-            begintime: ct,
-            endtime: ct.add(1, 'day')
+            begintime: ct.utc().format(),
+            endtime: ct.add(1, 'd').utc().format()
         };
     }
 
